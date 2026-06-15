@@ -1,0 +1,29 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": "notify",
+  "default_agent": "opencode-go/deepseek-v4-flash",
+  "permission": {
+    "git reset": "deny",
+    "sudo": "ask",
+    "rm -rf": "ask"
+  },
+  "mcp": {
+    "markitdown": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "markitdown-mcp"
+      ],
+      "enabled": false
+    },
+    "mise": {
+      "type": "local",
+      "command": [
+        "mise",
+        "mcp"
+      ],
+      "enabled": true
+    }
+  },
+  "lsp": true
+}
