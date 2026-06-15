@@ -20,8 +20,15 @@ mkcode() {
 }
 
 cdd() {
+
+
+if {{ .hostname }} == "work"{
+  cd ~/developer${1:+/$1}
+  } else {
   cd ~/Developer${1:+/$1}
+  }
 }
+
 
 alias ..='cd ..'
 alias ...='cd ../..'
