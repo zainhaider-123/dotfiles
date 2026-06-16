@@ -55,11 +55,7 @@
       "disable": true
     },
     "plan": {
-      "color": "#2C05FF"
+      "disable": true
     },
-    "study": {
-      "prompt": "load this skill",
-      "color": "#2CFF05"
-    }
   }
 }
