@@ -1,12 +1,18 @@
 eval "$(mise activate zsh)"
 
-export ANDROID_HOME=$HOME/Library/Android/sdk
+{{ if eq .hostname "mac" }}
+export ANDROID_HOME="$HOME/Library/Android/sdk"
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$ANDROID_HOME/tools/bin
-
-
 export OPENSSL_DIR=$(brew --prefix openssl@3)
 export PKG_CONFIG_PATH=$OPENSSL_DIR/lib/pkgconfig
+{{ end }}
+{{ if eq .hostname "work" }}
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+{{ end }}
+
+export PATH="$HOME/.opencode/bin:$PATH"
 
 autoload -Uz compinit
 compinit
@@ -23,13 +29,11 @@ cdd() {
   {{ if eq .hostname "work" }}cd ~/developer${1:+/$1}{{ else }}cd ~/Developer${1:+/$1}{{ end }}
 }
 
-
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
-
 # Load Angular CLI autocompletion.
-source <(ng completion script)
-
-export PATH="$HOME/.opencode/bin:$PATH"
+if command -v ng >/dev/null 2>&1; then
+  source <(ng completion script)
+fi
