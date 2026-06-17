@@ -1,0 +1,3 @@
+{{ if ne .hostname "niri" }}
+.config/niri/
+{{ end }}
