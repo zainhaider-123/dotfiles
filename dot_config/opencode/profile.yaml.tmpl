@@ -1,4 +1,4 @@
-env: {{ if eq .hostname "work" }}Linux/Ubuntu (WSL){{ else if eq .hostname "mac" }}macOS{{ end }}
+env: {{ if eq .hostname "work" }}Linux/Ubuntu (WSL){{ else if eq .hostname "mac" }}macOS{{ else if eq .hostname "niri" }}CachyOS/Arch Niri{{ end }}
 shell: zsh
 pkg: [brew, mise]
 python: uv (do not use pip)
@@ -18,5 +18,5 @@ Important:
   - never make implementation and documentation files only if the user asks
 
 Platform:
-  hostname: {{ if eq .hostname "work" }}Linux/Ubuntu (WSL){{ else if eq .hostname "mac" }}macOS{{ end }}
-  os: {{ if eq .hostname "work" }}Linux/Ubuntu (WSL){{ else if eq .hostname "mac" }}macOS{{ end }}
+  hostname: {{ if eq .hostname "work" }}Linux/Ubuntu (WSL){{ else if eq .hostname "mac" }}macOS{{ else if eq .hostname "niri" }}CachyOS/Arch Niri{{ end }}
+  os: {{ if eq .hostname "work" }}Linux/Ubuntu (WSL){{ else if eq .hostname "mac" }}macOS{{ else if eq .hostname "niri" }}CachyOS/Arch Niri{{ end }}
