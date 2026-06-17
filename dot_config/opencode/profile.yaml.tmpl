@@ -1,6 +1,6 @@
 env: {{ if eq .hostname "work" }}Linux/Ubuntu (WSL){{ else if eq .hostname "mac" }}macOS{{ else if eq .hostname "niri" }}CachyOS/Arch Niri{{ end }}
-shell: zsh
-pkg: [brew, mise]
+shell: {{ if eq .hostname "niri" }}fish{{ else }}zsh{{ end }}
+pkg: {{ if eq .hostname "niri" }}[paru, pacman, mise]{{ else }}[brew, mise]{{ end }}
 python: uv (do not use pip)
 naming:
   code:
