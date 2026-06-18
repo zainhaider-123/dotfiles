@@ -1,33 +1,41 @@
-{{ if eq .hostname "mac" }}
-export ANDROID_HOME="$HOME/Library/Android/sdk"
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH=$PATH:$ANDROID_HOME/tools/bin
+{{ if eq .chezmoi.os "darwin" }}
 export OPENSSL_DIR=$(brew --prefix openssl@3)
-export PKG_CONFIG_PATH=$OPENSSL_DIR/lib/pkgconfig
-{{ end }}
-{{ if eq .hostname "work" }}
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export PATH=$PATH:"$ANDROID_HOME/platform-tools"
+export PATH=$PATH:"$ANDROID_HOME/tools/bin"
+export PKG_CONFIG_PATH="$OPENSSL_DIR/lib/pkgconfig"
+{{ else if and (eq .hostname "work") (eq .chezmoi.os "linux") }}
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 {{ end }}
 
-eval "$(mise activate zsh)"
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
 
-# oh-my-zsh config
-export ZSH="$HOME/.oh-my-zsh"
 export PATH="$HOME/.opencode/bin:$PATH"
-ZSH_THEME="powerlevel10k/powerlevel10k"
-plugins=(git)
-source $ZSH/oh-my-zsh.sh
 
-# p10k config
+# p10k instant prompt
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# oh-my-zsh config
+if [[ -d "$HOME/.oh-my-zsh" ]]; then
+  export ZSH="$HOME/.oh-my-zsh"
 
-autoload -Uz compinit
-compinit
+  if [[ -d "${ZSH_CUSTOM:-$ZSH/custom}/themes/powerlevel10k" ]]; then
+    ZSH_THEME="powerlevel10k/powerlevel10k"
+  else
+    ZSH_THEME="robbyrussell"
+  fi
+
+  plugins=(git)
+  source "$ZSH/oh-my-zsh.sh"
+fi
+
+# p10k config
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 mkcd() {
   mkdir -p "$1" && cd "$1"
