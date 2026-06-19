@@ -54,7 +54,13 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
+alias 'chzd'='chezmoi cd'
+
 # Load Angular CLI autocompletion.
 if command -v ng >/dev/null 2>&1; then
   source <(ng completion script)
+fi
+
+if [ -f "$HOME/.vite-plus/env" ]; then
+  . "$HOME/.vite-plus/env"
 fi
