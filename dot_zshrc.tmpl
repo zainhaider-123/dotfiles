@@ -64,3 +64,6 @@ fi
 if [ -f "$HOME/.vite-plus/env" ]; then
   . "$HOME/.vite-plus/env"
 fi
+{{ if and (eq .hostname "work") (eq .chezmoi.os "linux") }}
+export BROWSER="$HOME/.local/bin/browser-wsl"
+{{ end }}
