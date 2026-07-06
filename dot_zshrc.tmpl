@@ -54,6 +54,12 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
+if command -v opencode >/dev/null 2>&1; then
+  oc() {
+    command opencode "$@"
+  }
+fi
+
 alias 'chzd'='chezmoi cd'
 
 # Load Angular CLI autocompletion.
