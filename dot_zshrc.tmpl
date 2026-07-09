@@ -28,6 +28,7 @@ ZSH_CONFIG_DIR="${HOME}/.zsh"
 
 # Plugin directory
 ZSH_PLUGIN_DIR="${ZSH_CONFIG_DIR}/plugin"
+[[ -d "${ZSH_PLUGIN_DIR}" ]] || mkdir -p "${ZSH_PLUGIN_DIR}"
 
 # p10k instant prompt
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -47,8 +48,12 @@ autoload -Uz compinit
 compinit
 
 # fzf
-if command -v fzf >/dev/null 2>&1; then
-  source <(fzf --zsh)
+if [[ -d "${ZSH_PLUGIN_DIR}/fzf" && -x "${ZSH_PLUGIN_DIR}/fzf/bin/fzf" ]]; then
+  export PATH="${ZSH_PLUGIN_DIR}/fzf/bin:$PATH"
+
+  if command -v fzf >/dev/null 2>&1; then
+    source <(fzf --zsh)
+  fi
 fi
 
 # fzf-tab
