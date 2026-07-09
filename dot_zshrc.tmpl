@@ -1,5 +1,8 @@
 {{ if eq .chezmoi.os "darwin" }}
-export OPENSSL_DIR=$(brew --prefix openssl@3)
+if command -v brew >/dev/null 2>&1; then
+  export OPENSSL_DIR=$(brew --prefix openssl@3)
+  export PKG_CONFIG_PATH="$OPENSSL_DIR/lib/pkgconfig"
+fi
 export ANDROID_HOME="$HOME/Library/Android/sdk"
 export PATH=$PATH:"$ANDROID_HOME/platform-tools"
 export PATH=$PATH:"$ANDROID_HOME/tools/bin"
@@ -7,69 +10,85 @@ export PKG_CONFIG_PATH="$OPENSSL_DIR/lib/pkgconfig"
 {{ else if and (eq .hostname "work") (eq .chezmoi.os "linux") }}
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+export BROWSER="$HOME/.local/bin/browser-wsl"
 {{ end }}
 
 if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate zsh)"
 fi
 
+if [ -f "$HOME/.vite-plus/env" ]; then
+  . "$HOME/.vite-plus/env"
+fi
+
 export PATH="$HOME/.opencode/bin:$PATH"
+
+# zsh config directory
+ZSH_CONFIG_DIR="${HOME}/.zsh"
+
+# Plugin directory
+ZSH_PLUGIN_DIR="${ZSH_CONFIG_DIR}/plugin"
 
 # p10k instant prompt
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# oh-my-zsh config
-if [[ -d "$HOME/.oh-my-zsh" ]]; then
-  export ZSH="$HOME/.oh-my-zsh"
-
-  ZSH_THEME="powerlevel10k/powerlevel10k"
-
-  export FZF_BASE=/path/to/fzf/install/dir
-
-  plugins=(git zsh-syntax-highlighting zsh-autocomplete fzf chezmoi brew)
-  source "$ZSH/oh-my-zsh.sh"
+# powerlevel10k
+if [[ -f "${ZSH_PLUGIN_DIR}/powerlevel10k/powerlevel10k.zsh-theme" ]]; then
+  source "${ZSH_PLUGIN_DIR}/powerlevel10k/powerlevel10k.zsh-theme"
 fi
 
+# p10k config
+[[ -f "${ZSH_CONFIG_DIR}/.p10k.zsh" ]] && source "${ZSH_CONFIG_DIR}/.p10k.zsh"
+
+# Completion system
 autoload -Uz compinit
 compinit
 
-# p10k config
-[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
-
-mkcd() {
-  mkdir -p "$1" && cd "$1"
-}
-
-mkcode() {
-  mkdir -p "$1" && code "$1"
-}
-
-cdd() {
-  {{ if eq .hostname "work" }}cd ~/developer${1:+/$1}{{ else }}cd ~/Developer${1:+/$1}{{ end }}
-}
-
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-
-if command -v opencode >/dev/null 2>&1; then
-  oc() {
-    command opencode "$@"
-  }
+# fzf
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
 fi
 
-alias 'chzd'='chezmoi cd'
+# fzf-tab
+if [[ -f "${ZSH_PLUGIN_DIR}/fzf-tab/fzf-tab.plugin.zsh" ]]; then
+  source "${ZSH_PLUGIN_DIR}/fzf-tab/fzf-tab.plugin.zsh"
+
+  [[ -f "${ZSH_CONFIG_DIR}/.fzf-tab.zsh" ]] && source "${ZSH_CONFIG_DIR}/fzf-tab.zsh"
+fi
+
+# zsh-autosuggestions
+if [[ -f "${ZSH_PLUGIN_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  source "${ZSH_PLUGIN_DIR}/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+
+# zsh-syntax-highlighting
+if [[ -f "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  source "${ZSH_PLUGIN_DIR}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+
+# oh-my-zsh config
+# if [[ -d "$HOME/.oh-my-zsh" ]]; then
+#   export ZSH="$HOME/.oh-my-zsh"
+# 
+#   ZSH_THEME="powerlevel10k/powerlevel10k"
+# 
+#   export FZF_BASE=/path/to/fzf/install/dir
+# 
+#   plugins=(git zsh-syntax-highlighting zsh-autocomplete fzf chezmoi brew)
+#   source "$ZSH/oh-my-zsh.sh"
+# fi
+
+[[ -f "${ZSH_CONFIG_DIR}/functions.zsh" ]] && source "${ZSH_CONFIG_DIR}/functions.zsh"
+[[ -f "${ZSH_CONFIG_DIR}/alias.zsh" ]] && source "${ZSH_CONFIG_DIR}/alias.zsh"
 
 # Load Angular CLI autocompletion.
 if command -v ng >/dev/null 2>&1; then
-  source <(ng completion script)
-fi
+  if [[ ! -f "$HOME/.cache/ng-completion.zsh" ]]; then
+    mkdir -p "$HOME/.cache"
+    ng completion script > "$HOME/.cache/ng-completion.zsh"
+  fi
 
-if [ -f "$HOME/.vite-plus/env" ]; then
-  . "$HOME/.vite-plus/env"
+  source "$HOME/.cache/ng-completion.zsh"
 fi
-{{ if and (eq .hostname "work") (eq .chezmoi.os "linux") }}
-export BROWSER="$HOME/.local/bin/browser-wsl"
-{{ end }}
