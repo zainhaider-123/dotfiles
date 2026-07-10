@@ -10,10 +10,6 @@ cdd() {
   cd ~/developer${1:+/$1}
 }
 
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-
 if command -v opencode >/dev/null 2>&1; then
   oc() {
     command opencode "$@"
