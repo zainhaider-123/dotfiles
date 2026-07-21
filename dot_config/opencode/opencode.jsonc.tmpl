@@ -57,6 +57,11 @@
         "Authorization": "{{ (bitwarden "item" "Context7 API Key").login.password }}"
       },
       "enabled": true
+    },
+    "figma": {
+      "type": "remote",
+      "url": "https://mcp.figma.com/mcp",
+      "enabled": false
     }
   },
   "lsp": true,
@@ -67,17 +72,15 @@
         "workflow": "plan-agent",
         "planningAgents": [
           "plan",
-          "orchestrator"
         ],
       },
     ],
     "@tarquinen/opencode-dcp@latest",
     "opencode-vibeguard",
-    "oh-my-opencode-slim"
   ],
   "agent": {
     "build": {
-      "disable": true
+      "disable": false
     },
     "explore": {
       "disable": true
@@ -86,7 +89,7 @@
       "disable": true
     },
     "plan": {
-      "disable": true
+      "disable": false
     },
   }
 }
