@@ -1,0 +1,19 @@
+onboarding = false
+
+[theme]
+name = "vesper"
+auto_switch = false
+
+[ui.toast.herdr]
+position = "bottom-right"
+
+[ui]
+show_agent_labels_on_pane_borders = true
+agent_panel_sort = "priority"
+prompt_new_tab_name = false
+
+[keys]
+# Prefix
+prefix = "ctrl+b"
+navigate_workspace_up = "["
+navigate_workspace_down = "]"
