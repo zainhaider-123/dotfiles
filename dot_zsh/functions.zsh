@@ -16,36 +16,37 @@ if command -v opencode >/dev/null 2>&1; then
   }
 fi
 
-bw-ensure-session() {
-  command -v bw >/dev/null 2>&1 || return 0
-
-  if [[ -n "$BW_SESSION" ]] && command bw status --session "$BW_SESSION" 2>/dev/null | grep -q '"status":"unlocked"'; then
-    return 0
-  fi
-
-  local session
-  session="$(command bw unlock --raw)" || return 1
-  [[ -n "$session" ]] || return 1
-  export BW_SESSION="$session"
-}
-
-bw-unlock() {
+bw-sync() {
   if ! command -v bw >/dev/null 2>&1; then
     print -u2 "bw is not installed"
     return 1
   fi
+  if ! command -v jq >/dev/null 2>&1; then
+    print -u2 "jq is not installed"
+    return 1
+  fi
 
-  local session
-  session="$(command bw unlock --raw)" || return 1
-  [[ -n "$session" ]] || return 1
-  export BW_SESSION="$session"
-}
+  mkdir -p "$DATA_DIR"
 
-chezmoi() {
-  case "$1" in
-    apply|diff|update|execute-template|init)
-      bw-ensure-session || return 1
-      ;;
-  esac
-  command chezmoi "$@"
+  if ! command bw status 2>/dev/null | grep -q '"status":"unlocked"'; then
+    print "Unlocking Bitwarden vault..."
+    local bw_session_key
+    bw_session_key="$(command bw unlock --raw)" || return 1
+    [[ -n "$bw_session_key" ]] || return 1
+    export BW_SESSION="$bw_session_key"
+  fi
+
+  print "→ Syncing Bitwarden vault..."
+  command bw sync || return 1
+
+  print "→ Fetching context7_api_key..."
+  local context7_api_key
+  context7_api_key="$(command bw get item "Context7 API Key" | jq -r '.notes')" || return 1
+
+  {
+    print "secrets:"
+    print "  context7_api_key: $(jq -n --arg v "$context7_api_key" '$v')"
+  } >"$DATA_FILE"
+  chmod 600 "$DATA_FILE"
+  print "Wrote $DATA_FILE"
 }

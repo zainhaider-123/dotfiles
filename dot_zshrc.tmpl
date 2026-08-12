@@ -14,6 +14,9 @@ export BROWSER="$HOME/.local/bin/browser-wsl"
 
 export PATH="$HOME/.local/bin:$PATH"
 
+export CHEZMOI_SOURCE_PATH="$(command chezmoi source-path 2>/dev/null || echo "$HOME/.local/share/chezmoi")"
+export DATA_FILE="$CHEZMOI_SOURCE_PATH/.chezmoidata/secrets.yaml"
+
 if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate zsh)"
 fi

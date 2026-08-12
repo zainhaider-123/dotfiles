@@ -54,7 +54,7 @@
       "type": "remote",
       "url": "https://mcp.context7.com/mcp",
       "headers": {
-        "Authorization": "{{ (bitwarden "item" "Context7 API Key").login.password }}"
+        "CONTEXT7_API_KEY": "{{ .secrets.context7_api_key }}"
       },
       "enabled": true
     },
