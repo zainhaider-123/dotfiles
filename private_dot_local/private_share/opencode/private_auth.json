@@ -1,0 +1,6 @@
+{
+  "opencode-go": {
+    "type": "api",
+    "key": "{{ .secrets.opencode_api_key }}"
+  }
+}
